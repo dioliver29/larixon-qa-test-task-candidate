@@ -124,6 +124,31 @@ class TestVehicleTableOutput(unittest.TestCase):
         self.assertLessEqual(track.remaining_fuel(), 600)
         print(f"✅ Track max fuel limited to {track.remaining_fuel()}L (not over 600L)")
 
+class TestTypeValidation(unittest.TestCase):
+    def test_type_errors_table(self):
+        print("\n===== TypeError Validation Table =====")
+        print(f"{'Method':<30} | {'Input':<15} | {'Expected':<15} | {'Result'}")
+        print("-" * 80)
+
+        def check(func, input_desc):
+            try:
+                func()
+                result = "❌"
+            except TypeError:
+                result = "✅"
+            except Exception as e:
+                result = f"❌ ({type(e).__name__})"
+            print(f"{func.__name__:<30} | {input_desc:<15} | TypeError       | {result}")
+
+        car = Car(7)
+        track = Track(15, 2)
+
+        check(lambda: car.fill_up("abc"), '"abc" (str)')
+        check(lambda: car.drive([100]), '[100] (list)')
+        check(lambda: car.fill_up(None), 'None')
+        check(lambda: track.set_trailer_count("3"), '"3" (str)')
+        check(lambda: track.fill_up([]), '[] (list)')
+        check(lambda: track.drive(True), 'True (bool)')
 
 if __name__ == "__main__":
     unittest.main()
